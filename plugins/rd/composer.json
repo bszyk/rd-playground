@@ -1,0 +1,13 @@
+{
+  "name": "rd/plugin",
+  "description": "interal r&d playground",
+  "type": "project",
+  "license": "GPL-3.0",
+  "minimum-stability": "stable",
+  "require": {},
+  "autoload":{
+      "psr-4": {
+          "RD\\" : "includes/"
+      }
+  }
+}
