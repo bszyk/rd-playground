@@ -12,14 +12,15 @@
 <!-- nonce -->
 <?php wp_nonce_field( 'register_user', 'register_user_nonce' ); ?>
 <!-- nonce -->
-<label for='username'> Enter a username:
+<label for='reg_username'> Enter a username:
 	<input type='text' placeholder='username' name='reg_username' id='reg_username' />
 </label>
 <br />
-<label for='password'> Enter a password:
+<label for='reg_password'> Enter a password:
 	<input type='text' placeholder='password' name='reg_password' id='reg_password' />
 </label>
 <br />
 <button type='submit' value='Submit'>Submit</button>
 <input type="hidden" name="action" value="create_user">
+<input type="hidden" name="permalink" value="<?php echo esc_url( get_permalink() ); ?>">
 </form>

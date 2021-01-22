@@ -17,6 +17,7 @@ class CustomUser {
 	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'create_user' ) );
+		add_action( 'after_setup_theme', array( $this, 'login_user' ) );
 	}
 
 	/**
@@ -26,18 +27,19 @@ class CustomUser {
 		if ( ! empty( $_POST ) || ! isset( $_POST['register_user_nonce'] )
 		|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['register_user_nonce'] ) ), 'register_user' ) ) {
 
-			if ( isset( $_POST['reg_username'] ) && isset( $_POST['reg_password'] ) ) {
-				$username = sanitize_text_field( wp_unslash( $_POST['reg_username'] ) );
-				$password = sanitize_text_field( wp_unslash( $_POST['reg_password'] ) );
-
-				$hash_password = wp_hash_password( $password );
+			if ( isset( $_POST['reg_username'] ) && isset( $_POST['reg_password'] ) && isset( $_POST['permalink'] ) ) {
+				$username  = sanitize_text_field( wp_unslash( $_POST['reg_username'] ) );
+				$password  = sanitize_text_field( wp_unslash( $_POST['reg_password'] ) );
+				$permalink = sanitize_text_field( wp_unslash( $_POST['permalink'] ) );
 
 				$userdata = array(
-					'user_pass'  => $hash_password,
-					'user_login' => sanitize_text_field( $username ),
+					'user_pass'  => $password,
+					'user_login' => $username,
 				);
-		
+
 				wp_insert_user( $userdata );
+
+				wp_safe_redirect( $permalink );
 			}
 		}
 	}
@@ -45,4 +47,31 @@ class CustomUser {
 	/**
 	 * @
 	 */
+	public function login_user() {
+		if ( ! empty( $_POST ) || ! isset( $_POST['login_user_nonce'] )
+		|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['login_user_nonce'] ) ), 'login_user' ) ) {
+
+			if ( isset( $_POST['login_username'] ) && isset( $_POST['login_password'] ) && isset( $_POST['permalink'] ) ) {
+				$username  = sanitize_text_field( wp_unslash( $_POST['login_username'] ) );
+				$password  = sanitize_text_field( wp_unslash( $_POST['login_password'] ) );
+				$permalink = sanitize_text_field( wp_unslash( $_POST['permalink'] ) );
+
+				$creds = array(
+					'user_login'    => $username,
+					'user_password' => $password,
+					'remember'      => true,
+				);
+
+				$user = wp_signon( $creds, false );
+
+				if ( is_wp_error( $user ) ) {
+						echo '<div>';
+						echo esc_html( $user->get_error_message() );
+						echo '</div>';
+				}
+
+				wp_safe_redirect( $permalink );
+			}
+		}
+	}
 }
