@@ -17,6 +17,7 @@ class CustomUser {
 	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'create_user' ) );
+		add_action( 'init', array( $this, 'rest_create_user' ) );
 		add_action( 'after_setup_theme', array( $this, 'login_user' ) );
 	}
 
@@ -24,8 +25,8 @@ class CustomUser {
 	 * @
 	 */
 	public function create_user() {
-		if ( ! empty( $_POST ) || ! isset( $_POST['register_user_nonce'] )
-		|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['register_user_nonce'] ) ), 'register_user' ) ) {
+		if ( ! empty( $_POST ) || ! isset( $_POST['reg_user_nonce'] )
+		|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['reg_user_nonce'] ) ), 'reg_user' ) ) {
 
 			if ( isset( $_POST['reg_username'] ) && isset( $_POST['reg_password'] ) && isset( $_POST['permalink'] ) ) {
 				$username  = sanitize_text_field( wp_unslash( $_POST['reg_username'] ) );
@@ -40,6 +41,31 @@ class CustomUser {
 				wp_insert_user( $userdata );
 
 				wp_safe_redirect( $permalink );
+			}
+		}
+	}
+
+	/**
+	 * @
+	 */
+	public function rest_create_user() {
+		if ( ! empty( $_POST ) || ! isset( $_POST['rest_reg_user_nonce'] )
+		|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['rest_reg_user_nonce'] ) ), 'rest_reg_user' ) ) {
+
+			if ( isset( $_POST['rest_reg_username'] ) && isset( $_POST['rest_reg_password'] ) && isset( $_POST['rest_reg_email'] ) && isset( $_POST['permalink'] ) ) {
+				$username = sanitize_text_field( wp_unslash( $_POST['rest_reg_username'] ) );
+				$email    = sanitize_text_field( wp_unslash( $_POST['rest_reg_email'] ) );
+				$password = sanitize_text_field( wp_unslash( $_POST['rest_reg_password'] ) );
+
+				$request = new \WP_REST_Request( 'POST', '/wp/v2/users' );
+				$request->set_query_params(
+					array(
+						'username' => $username,
+						'email'    => $email,
+						'password' => $password,
+					)
+				);
+				rest_do_request( $request );
 			}
 		}
 	}
@@ -65,9 +91,7 @@ class CustomUser {
 				$user = wp_signon( $creds, false );
 
 				if ( is_wp_error( $user ) ) {
-						echo '<div>';
 						echo esc_html( $user->get_error_message() );
-						echo '</div>';
 				}
 
 				wp_safe_redirect( $permalink );
