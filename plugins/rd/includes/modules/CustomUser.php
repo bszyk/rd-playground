@@ -23,12 +23,12 @@ class CustomUser {
 	 * @
 	 */
 	public function create_user() {
-		if ( ! empty( $_POST ) || ! isset( $_POST['registration_form_nonce'] )
-		|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['registration_form_nonce'] ) ), 'registration_form' ) ) {
+		if ( ! empty( $_POST ) || ! isset( $_POST['register_user_nonce'] )
+		|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['register_user_nonce'] ) ), 'register_user' ) ) {
 
-			if ( isset( $_POST['username'] ) && isset( $_POST['password'] ) ) {
-				$username = sanitize_text_field( wp_unslash( $_POST['username'] ) );
-				$password = sanitize_text_field( wp_unslash( $_POST['password'] ) );
+			if ( isset( $_POST['reg_username'] ) && isset( $_POST['reg_password'] ) ) {
+				$username = sanitize_text_field( wp_unslash( $_POST['reg_username'] ) );
+				$password = sanitize_text_field( wp_unslash( $_POST['reg_password'] ) );
 
 				$hash_password = wp_hash_password( $password );
 
@@ -45,7 +45,4 @@ class CustomUser {
 	/**
 	 * @
 	 */
-	public function login_user() {
-		
-	}
 }
