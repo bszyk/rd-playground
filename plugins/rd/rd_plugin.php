@@ -14,7 +14,8 @@ namespace RD;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-use RD\modules\CustomUser;
+// use RD\modules\CustomUser;
+use RD\modules\JwtSP;
 
 /**
  * @
@@ -25,7 +26,7 @@ class RdPlugin {
 	 * @
 	 */
 	public function __construct() {
-		new CustomUser();
+		new JwtSP();
 	}
 
 }

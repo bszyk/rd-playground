@@ -37,3 +37,14 @@ function render_login_form() {
 }
 
 add_shortcode( 'login_form', 'render_login_form' );
+
+/**
+ * Login to IdP with JWT form
+ */
+function render_idp_login_form() {
+	ob_start();
+	get_template_part( 'template-parts/rd/rd', 'jwt_login_form' );
+	return ob_get_clean();
+}
+
+add_shortcode( 'login_form', 'render_idp_login_form' );

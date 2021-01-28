@@ -22,4 +22,11 @@ node_modules/
 *.sql
 *.sqlite
 
-plugins/wp-rest-api-authentication
+plugins/wp-rest-api-authentication/
+plugins/jwt-auth/
+plugins/learndash-propanel/
+plugins/miniorange-saml-20-single-sign-on/
+plugins/sfwd-lms/
+uploads/
+
+.DS_Store
