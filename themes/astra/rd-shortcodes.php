@@ -47,4 +47,4 @@ function render_idp_login_form() {
 	return ob_get_clean();
 }
 
-add_shortcode( 'login_form', 'render_idp_login_form' );
+add_shortcode( 'idp_login_form', 'render_idp_login_form' );

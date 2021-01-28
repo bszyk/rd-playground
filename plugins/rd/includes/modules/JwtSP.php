@@ -16,32 +16,38 @@ class JwtSP {
 	 * @
 	 */
 	public function __construct() {
-		add_action( 'after_setup_theme', array( $this, 'request_token_from_idp' ) );
+		add_action( 'init', array( $this, 'request_token_from_idp' ) );
 	}
 
 	/**
 	 * Sends request to get IdP's token
 	 */
 	public function request_token_from_idp() {
-		$username = 'admin';
-		$password = 'admin';
+		if ( ! empty( $_POST ) || ! isset( $_POST['idp_user_nonce'] )
+		|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['idp_user_nonce'] ) ), 'idp_user' ) ) {
 
-		$response = wp_remote_request(
-			'http://ssord-identity.local/wp-json/jwt-auth/v1/token',
-			array(
-				'method' => 'POST',
-				'body'   => array(
-					'username' => $username,
-					'password' => $password,
-				),
-			)
-		);
+			if ( isset( $_POST['idp_username'] ) && isset( $_POST['idp_password'] ) ) {
+				$username = sanitize_text_field( wp_unslash( $_POST['idp_username'] ) );
+				$password = sanitize_text_field( wp_unslash( $_POST['idp_password'] ) );
 
-		$body = json_decode( wp_remote_retrieve_body( $response ) );
+				$response = wp_remote_request(
+					'http://ssord-identity.local/wp-json/jwt-auth/v1/token',
+					array(
+						'method' => 'POST',
+						'body'   => array(
+							'username' => $username,
+							'password' => $password,
+						),
+					)
+				);
 
-		if ( 200 === $body->statusCode ) {
-			$token = $body->data->token;
-			$this->login_to_idp( $username, $password, $token );
+				$body = json_decode( wp_remote_retrieve_body( $response ) );
+
+				if ( 200 === $body->statusCode ) {
+					$token = $body->data->token;
+					$this->login_to_idp( $username, $password, $token );
+				}
+			}
 		}
 	}
 
