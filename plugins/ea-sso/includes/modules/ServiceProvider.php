@@ -1,26 +1,36 @@
 <?php
 /**
- * Login to another WP site via JWT and REST API
+ * Login to another WP site via JWT and REST API.
  *
- * @package rd
+ * @package EA_SSO
  */
 
-namespace RD\modules;
+namespace EA_SSO\modules;
 
 /**
  * @
  */
-class JwtSP {
+class ServiceProvider {
 
 	/**
-	 * @
+	 *
+	 * Root url of IdP to request token from
+	 *
+	 * @var string
+	 */
+	private $url;
+
+	/**
+	 * Construct
 	 */
 	public function __construct() {
+		$this->url = 'http://ssord-identity.local';
+
 		add_action( 'init', array( $this, 'request_token_from_idp' ) );
 	}
 
 	/**
-	 * Sends request to get IdP's token
+	 * Send request to get IdP's token
 	 */
 	public function request_token_from_idp() {
 		if ( ! empty( $_POST ) || ! isset( $_POST['idp_user_nonce'] )
@@ -31,7 +41,7 @@ class JwtSP {
 				$password = sanitize_text_field( wp_unslash( $_POST['idp_password'] ) );
 
 				$response = wp_remote_request(
-					'https://dev-swatondemand.pantheonsite.io/wp-json/jwt-auth/v1/token',
+					$this->url . '/wp-json/jwt-auth/v1/token',
 					array(
 						'method' => 'POST',
 						'body'   => array(
@@ -54,11 +64,16 @@ class JwtSP {
 	}
 
 	/**
+	 *
 	 * If a valid token is received, hit IdP endpoint to trigger login
+	 *
+	 * @param string $username IdP username.
+	 * @param string $password IdP password.
+	 * @param string $token JWT token from IdP.
 	 */
 	public function login_to_idp( $username, $password, $token ) {
 		$response = wp_remote_request(
-			'https://dev-swatondemand.pantheonsite.io/wp-json/rdlogin/v1/login',
+			$this->url . '/wp-json/ea-sso/v1/login',
 			array(
 				'method'  => 'POST',
 				'body'    => wp_json_encode(
@@ -75,7 +90,7 @@ class JwtSP {
 		);
 
 		if ( 200 === wp_remote_retrieve_response_code( $response ) ) {
-			wp_redirect( 'https://dev-swatondemand.pantheonsite.io/wp-admin' );
+			wp_redirect( $this->url . '/wp-admin' );
 			exit();
 		} else {
 			echo 'reponse error 2';

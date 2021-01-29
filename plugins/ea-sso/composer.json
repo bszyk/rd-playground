@@ -1,13 +1,13 @@
 {
-  "name": "rd/plugin",
-  "description": "interal r&d playground",
+  "name": "ea/sso-plugin",
+  "description": "custom sso plugin",
   "type": "project",
   "license": "GPL-3.0",
   "minimum-stability": "stable",
   "require": {},
   "autoload":{
       "psr-4": {
-          "RD\\" : "includes/"
+          "EA_SSO\\" : "includes/"
       }
   }
 }

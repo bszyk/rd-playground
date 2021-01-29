@@ -1,8 +1,8 @@
 <?php
 /**
- * Template part for research
+ * Login form
  *
- * @package rd
+ * @package EA_SSO
  */
 
 if ( is_user_logged_in() ) { ?>
@@ -10,7 +10,7 @@ if ( is_user_logged_in() ) { ?>
 <?php } else { ?>
 
 <form action='<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>' method='POST' style='border: 1px solid black; padding: 25px; margin: 25px;'>
-<?php wp_nonce_field( 'idp_user', 'idp_user_nonce' ); ?>
+	<?php wp_nonce_field( 'idp_user', 'idp_user_nonce' ); ?>
 <h3>Login to the identity provider:</h3>
 <label for='idp_username'> Enter a username:
 	<input type='text' placeholder='username' name='idp_username' id='idp_username' />

@@ -30,3 +30,5 @@ plugins/sfwd-lms/
 uploads/
 
 .DS_Store
+
+vendor/
