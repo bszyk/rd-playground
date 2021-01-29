@@ -22,6 +22,7 @@ if ( is_user_logged_in() ) { ?>
 <br />
 <button type='submit' value='Submit'>Submit</button>
 <input type="hidden" name="action" value="request_token_from_idp">
+<input type="hidden" name="permalink" value="<?php echo esc_attr( get_permalink() ); ?>">
 </form>
 	<?php
 }

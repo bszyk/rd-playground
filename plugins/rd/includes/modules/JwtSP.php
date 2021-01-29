@@ -1,6 +1,6 @@
 <?php
 /**
- * Create custom user
+ * Login to another WP site via JWT and REST API
  *
  * @package rd
  */
@@ -31,7 +31,7 @@ class JwtSP {
 				$password = sanitize_text_field( wp_unslash( $_POST['idp_password'] ) );
 
 				$response = wp_remote_request(
-					'http://ssord-identity.local/wp-json/jwt-auth/v1/token',
+					'https://dev-swatondemand.pantheonsite.io/wp-json/jwt-auth/v1/token',
 					array(
 						'method' => 'POST',
 						'body'   => array(
@@ -46,6 +46,8 @@ class JwtSP {
 				if ( 200 === $body->statusCode ) {
 					$token = $body->data->token;
 					$this->login_to_idp( $username, $password, $token );
+				} else {
+					echo 'response error 1';
 				}
 			}
 		}
@@ -56,7 +58,7 @@ class JwtSP {
 	 */
 	public function login_to_idp( $username, $password, $token ) {
 		$response = wp_remote_request(
-			'http://ssord-identity.local/wp-json/rdlogin/v1/login',
+			'https://dev-swatondemand.pantheonsite.io/wp-json/rdlogin/v1/login',
 			array(
 				'method'  => 'POST',
 				'body'    => wp_json_encode(
@@ -73,9 +75,10 @@ class JwtSP {
 		);
 
 		if ( 200 === wp_remote_retrieve_response_code( $response ) ) {
-			wp_redirect( 'http://ssord-identity.local/wp-admin' );
+			wp_redirect( 'https://dev-swatondemand.pantheonsite.io/wp-admin' );
 			exit();
+		} else {
+			echo 'reponse error 2';
 		}
-
 	}
 }
